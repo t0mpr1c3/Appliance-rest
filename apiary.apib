@@ -26,9 +26,9 @@ Appliance related resources of the **Appliance API**
 ### Create an Appliance [POST]
 + Request (application/json)
 
-        { "title": "Appliance" }
+        { "title": "Local Fan", "status": "off", "controlling_mote_id": 5 }
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
 
         { "id": 5, "title": "Local Fan", "status": "off", "controlling_mote_id": 5 }
 
@@ -41,13 +41,14 @@ A single Appliance object with all its details
 ### Retrieve an Appliance [GET]
 + Response 200 (application/json)
 
-    + Header
+        { "id": 0, "title": "Heating", "status": "off", "controlling_mote_id": 1 }
 
-            X-My-Header: The Value
+### Edit Status of an Appliance [PUT]
++ Request (application/json)
 
-    + Body
-
-            { "id": 0, "title": "Heating", "status": "off", "controlling_mote_id": 1 }
+        { "status": "off" }
+        
++ Response 200
 
 ### Remove an Appliance [DELETE]
 + Response 204
@@ -116,24 +117,30 @@ A single Mote object with all its details
 + Parameters
     + id (required, number, `0`) ... Numeric `index` of object
 
-### Retrieve a Sensor [GET]
+### Retrieve a Mote [GET]
 + Response 200 (application/json)
 
-    + Header
-
-            X-My-Header: The Value
-
-    + Body
-
-            { 
-                "id": 0, "title": "beaglebone", "device_id": 0x50, "location": "office",
+        { 
+            "id": 0, "title": "beaglebone", "device_id": 0x50, "location": "office",
                 "sensors": [
-                    { "measure_id": 0, "value": "0", "timestamp": "0" },
-                    { "measure_id": 1, "value": "0", "timestamp": "0" },
-                    { "measure_id": 2, "value": "0", "timestamp": "0" },
-                    { "measure_id": 3, "value": "0", "timestamp": "0" }
-                ]
-            }
+                { "measure_id": 0, "value": "0", "timestamp": "0" },
+                { "measure_id": 1, "value": "0", "timestamp": "0" },
+                { "measure_id": 2, "value": "0", "timestamp": "0" },
+                { "measure_id": 3, "value": "0", "timestamp": "0" }
+            ]
+        }
+
+### Edit Sensor Values of a Mote [PUT]
++ Request (application/json)
+
+        {[
+            { "measure_id": 0, "value": "0", "timestamp": "0" },
+            { "measure_id": 1, "value": "0", "timestamp": "0" },
+            { "measure_id": 2, "value": "0", "timestamp": "0" },
+            { "measure_id": 3, "value": "0", "timestamp": "0" } 
+        ]}
+        
++ Response 200
 
 ### Remove a Mote [DELETE]
 + Response 204
@@ -181,13 +188,7 @@ A single Measure object with all its details
 ### Retrieve a Measure [GET]
 + Response 200 (application/json)
 
-    + Header
-
-            X-My-Header: The Value
-
-    + Body
-
-            { "id": 2, "temperature", "unit": "Celsius" }
+        { "id": 2, "temperature", "unit": "Celsius" }
 
 ### Remove a Measure [DELETE]
 + Response 204
@@ -398,22 +399,28 @@ A single ControlRule object with all its details
 ### Retrieve a ControlRule [GET]
 + Response 200 (application/json)
 
-    + Header
-
-            X-My-Header: The Value
-
-    + Body
-
-            { "id": 1, "title": "heating on weekday morning temperature rule", "actions": {
-              { "appliance_id": 1, "set_status": "on" }
-            }, "conditions": { 
-              { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
-              { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
-              { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "06:00:00" }, 
-              { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "08:30:00" },
-              { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
-            } 
+        { "id": 1, "title": "heating on weekday morning temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "on" }
+        }, "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "06:00:00" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "08:30:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+        } 
             
+### Edit Conditions of a ControlRule [PUT]
++ Request (application/json)
+
+        {[
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "06:00:00" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "08:30:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+        ]}
+        
++ Response 200
 
 ### Remove a ControlRule [DELETE]
 + Response 204

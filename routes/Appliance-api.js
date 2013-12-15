@@ -347,7 +347,7 @@ exports.addAppliance = function (req, res) {
   //newAppliance.status = "off";
   console.log('Adding appliance: ' + JSON.stringify(newAppliance));
   data.appliances.push(newAppliance);
-  res.send(200); // OK
+  res.send(201); // OK
 };
 
 exports.addMote = function (req, res) {
@@ -355,7 +355,7 @@ exports.addMote = function (req, res) {
   newMote.id = data.motes[data.motes.length].id + 1;
   console.log('Adding mote: ' + JSON.stringify(newMote));
   data.motes.push(newMote);
-  res.send(200); // OK
+  res.send(201); // OK
 };
 
 exports.addMeasure = function (req, res) {
@@ -363,7 +363,7 @@ exports.addMeasure = function (req, res) {
   newMeasure.id = data.measures[data.measures.length].id + 1;
   console.log('Adding measure: ' + JSON.stringify(newMeasure));
   data.measures.push(newMeasure);
-  res.send(200); // OK
+  res.send(201); // OK
 };
 
 exports.addControlRule = function (req, res) {
@@ -371,7 +371,7 @@ exports.addControlRule = function (req, res) {
   newControlRule.id = data.controlrules[data.controlrules.length].id + 1;
   console.log('Adding control rule: ' + JSON.stringify(newControlRule));
   data.controlrules.push(newControlRule);
-  res.send(200); // OK
+  res.send(201); // OK
 };
 
 /*
@@ -412,6 +412,19 @@ exports.editMoteSensors = function (req, res) {
     if (id === data.motes[i].id) {
       console.log('Updating sensors for mote with id: ' + id);
       data.motes[i].sensors = req.body;
+      res.send(200); // OK
+      return;
+    }
+  }
+  res.json(404); // Not found
+};
+
+exports.editControlRule = function (req, res) {
+  var id = req.params.id;
+  for (var i = 0; i < data.controlrules.length; i++) {
+    if (id === data.controlrules[i].id) {
+      console.log('Updating control rule with id: ' + id);
+      data.controlrules[i].conditions = req.body;
       res.send(200); // OK
       return;
     }
