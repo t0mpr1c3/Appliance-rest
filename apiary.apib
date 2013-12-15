@@ -1,0 +1,419 @@
+FORMAT: 1A
+HOST: http://www.google.com
+
+# Appliance API
+Appliance API is a *home automation* application allowing control over appliances using data from a network of sensors.
+
+# Group Appliance
+Appliance related resources of the **Appliance API**
+
+## Appliance Collection [/appliances]
+### List all Appliances [GET]
++ Response 200 (application/json)
+
+        [{
+          "id": 0, "title": "Heating", "status": "off", "controlling_mote_id": 1
+        }, {
+          "id": 1, "title": "Air Conditioner", "status": "off", "controlling_mote_id": 2
+        }, {
+          "id": 2, "title": "Central Fan", "status": "off", "controlling_mote_id": 2
+        }, {
+          "id": 3, "title": "Door Bell", "status": "off", "controlling_mote_id": 3
+        }, {
+          "id": 4, "title": "Laundry Room Ceiling Lamp", "status": "off", "controlling_mote_id": 4
+        }]
+
+### Create an Appliance [POST]
++ Request (application/json)
+
+        { "title": "Appliance" }
+
++ Response 201 (application/json)
+
+        { "id": 5, "title": "Local Fan", "status": "off", "controlling_mote_id": 5 }
+
+## Appliance [/appliances/{id}]
+A single Appliance object with all its details
+
++ Parameters
+    + id (required, number, `0`) ... Numeric `index` of object
+
+### Retrieve an Appliance [GET]
++ Response 200 (application/json)
+
+    + Header
+
+            X-My-Header: The Value
+
+    + Body
+
+            { "id": 0, "title": "Heating", "status": "off", "controlling_mote_id": 1 }
+
+### Remove an Appliance [DELETE]
++ Response 204
+
+
+# Group Mote
+Mote related resources of the **Appliance API**
+
+## Mote Collection [/motes]
+### List all Motes [GET]
++ Response 200 (application/json)
+
+        [{
+            "id": 0, "title": "beaglebone", "device_id": 0x50, "location": "office",
+            "sensors": [
+                { "measure_id": 0, "value": "0", "timestamp": "0" },
+                { "measure_id": 1, "value": "0", "timestamp": "0" },
+                { "measure_id": 2, "value": "0", "timestamp": "0" },
+                { "measure_id": 3, "value": "0", "timestamp": "0" }
+            ]
+        }, {
+            "id": 1, "title": "basement mote", "device_id": 0x51, "location": "basement",
+            "sensors": [
+                { "measure_id": 2, "value": "0", "timestamp": "0" },
+                { "measure_id": 4, "value": "0", "timestamp": "0" },
+                { "measure_id": 5, "value": "0", "timestamp": "0" }
+            ]
+        }, {
+            "id": 2, "title": "hallway mote", "device_id": 0x52, "location": "1st floor hallway",
+            "sensors": [
+                { "measure_id": 2, "value": "0", "timestamp": "0" },
+                { "measure_id": 3, "value": "0", "timestamp": "0" }
+            ]
+        }, {
+            "id": 3, "title": "porch mote", "device_id": 0x53, "location": "front porch",
+            "sensors": [
+                { "measure_id": 4, "value": "0", "timestamp": "0" },
+                { "measure_id": 5, "value": "0", "timestamp": "0" }
+            ]
+        }, {
+            "id": 4, "title": "laundry mote", "device_id": 0x54, "location": "laundry",
+            "sensors": [
+                { "measure_id": 4, "value": "0", "timestamp": "0" },
+                { "measure_id": 5, "value": "0", "timestamp": "0" }
+            ]
+        }]
+
+### Create a Mote [POST]
++ Request (application/json)
+
+        { 
+            "title": "kitchen mote", "location": "kitchen", 
+            "sensors": [{ "measure_id": 4, "value": "0", "timestamp": "0" }] 
+        }
+
++ Response 201 (application/json)
+
+        { 
+            "id": 5, "title": "kitchen mote", "location": "kitchen", 
+            "sensors": [{ "measure_id": 4, "value": "0", "timestamp": "0" }] 
+        }
+
+## Mote [/motes/{id}]
+A single Mote object with all its details
+
++ Parameters
+    + id (required, number, `0`) ... Numeric `index` of object
+
+### Retrieve a Sensor [GET]
++ Response 200 (application/json)
+
+    + Header
+
+            X-My-Header: The Value
+
+    + Body
+
+            { 
+                "id": 0, "title": "beaglebone", "device_id": 0x50, "location": "office",
+                "sensors": [
+                    { "measure_id": 0, "value": "0", "timestamp": "0" },
+                    { "measure_id": 1, "value": "0", "timestamp": "0" },
+                    { "measure_id": 2, "value": "0", "timestamp": "0" },
+                    { "measure_id": 3, "value": "0", "timestamp": "0" }
+                ]
+            }
+
+### Remove a Mote [DELETE]
++ Response 204
+
+
+# Group Measure
+Sensor related resources of the **Appliance API**
+
+## Measure Collection [/measures]
+### List all Measures [GET]
++ Response 200 (application/json)
+
+        [{
+          "id": 0, "title": "real time clock", "unit": "day"
+        }, {
+          "id": 1, "title": "real time clock", "unit": "time"
+        }, {
+          "id": 2, "title": "temperature", "unit": "Celsius"
+        }, {
+          "id": 3, "title": "humidity", "unit": "%"
+        }, {
+          "id": 4, "title": "PIR detector", "unit": "binary"
+        }, {
+          "id": 5, "title": "ambient light", "unit": "%"
+        }, {
+          "id": 6, "title": "reed switch", "unit": "binary"
+        }]
+
+### Create a Measure [POST]
++ Request (application/json)
+
+        { "title": "contact switch", "unit": "binary" }
+
++ Response 201 (application/json)
+
+        { "id": 7, "title": "contact switch", "unit": "binary" }
+
+
+## Measure [/measures/{id}]
+A single Measure object with all its details
+
++ Parameters
+    + id (required, number, `2`) ... Numeric `index` of object
+
+### Retrieve a Measure [GET]
++ Response 200 (application/json)
+
+    + Header
+
+            X-My-Header: The Value
+
+    + Body
+
+            { "id": 2, "temperature", "unit": "Celsius" }
+
+### Remove a Measure [DELETE]
++ Response 204
+
+
+# Group ControlRule
+ControlRule related resources of the **Appliance API**
+
+## ControlRule Collection [/controlrules]
+### List all ControlRules [GET]
++ Response 200 (application/json)
+
+        [{
+          "id": 0, "title": "heating on weekday morning temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "on" }
+          }, "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "06:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "08:30:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+          } 
+        }, {
+          "id": 1, "title": "heating off weekday morning temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "off" }
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "08:30:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "17:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "18.5" }
+          } 
+        }, {
+          "id": 2, "title": "heating on weekday evening temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "on" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "17:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+          } 
+        }, {
+          "id": 3, "title": "heating off weekday evening temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "off" }
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "18.5" }
+          } 
+        }, {
+          "id": 4, "title": "heating on weekend morning temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "on" }
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "06:30:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "10:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+          } 
+        }, {
+          "id": 5, "title": "heating off weekend morning temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "off" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "10:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "17:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "18.5" }
+          } 
+        }, {
+          "id": 6, "title": "heating on weekend evening temperature rule", "actions": 
+            { "appliance_id": 1, "set_status": "on" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "17:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+          } 
+        }, {
+          "id": 7, "title": "heating off weekend evening temperature rule", "actions": {
+            { "appliance_id": 1, "set_status": "off" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "18.5" }
+          } 
+        }, {
+          "id": 8, "title": "AC on weekday morning humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "on" }, 
+            { "appliance_id": 3, "set_status": "on" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "06:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "08:30:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "26.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "gt", "value": "0.80" }
+          } 
+        }, {
+          "id": 9, "title": "AC off weekday morning humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "off" }, 
+            { "appliance_id": 3, "set_status": "off" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "08:30:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "17:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "27.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "lt", "value": "0.70" }
+          } 
+        }, {
+          "id": 10, "title": "AC on weekday evening humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "on" }, 
+            { "appliance_id": 3, "set_status": "on" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "17:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "26.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "gt", "value": "0.80" }
+          } 
+        }, {
+          "id": 11, "title": "AC off weekday evening humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "off" }, 
+            { "appliance_id": 3, "set_status": "off" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "27.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "lt", "value": "0.70" }
+          } 
+        }, {
+          "id": 12, "title": "AC on weekend morning humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "on" }, 
+            { "appliance_id": 3, "set_status": "on" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "06:30:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "10:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "26.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "gt", "value": "0.80" }
+          } 
+        }, {
+          "id": 13, "title": "AC off weekend morning humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "off" }, 
+            { "appliance_id": 3, "set_status": "off" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "10:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "17:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "27.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "lt", "value": "0.70" }
+          } 
+        }, {
+          "id": 14, "title": "AC on weekend evening humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "on" }, 
+            { "appliance_id": 3, "set_status": "on" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "17:00:00" }, 
+            { "mote_id": 0, "sensor_index": 1, "operator": "lt", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "gt", "value": "26.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "gt", "value": "0.80" }
+          } 
+        }, {
+          "id": 15, "title": "AC off weekend evening humidity rule", "actions": {
+            { "appliance_id": 2, "set_status": "off" }, 
+            { "appliance_id": 3, "set_status": "off" } 
+          } , "conditions": { 
+            { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Saturday" }, 
+            { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Sunday" },
+            { "mote_id": 0, "sensor_index": 1, "operator": "ge", "value": "22:00:00" },
+            { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "27.5" },
+            { "mote_id": 2, "sensor_index": 1, "operator": "lt", "value": "0.70" }
+          } 
+        }]
+
+### Create a ControlRule [POST]
++ Request (application/json)
+
+        { "title": "contact switch", "unit": "binary" }
+
++ Response 201 (application/json)
+
+            { "id": 17, "title": "Laundry lamp on when PIR status set and ambient light is low", "actions": {
+              { "appliance_id": 5, "set_status": "on" }
+            }, "conditions": { 
+              { "mote_id": 4, "sensor_index": 0, "operator": "eq", "value": "set" }, 
+              { "mote_id": 4, "sensor_index": 1, "operator": "lt", "value": "0.50" }
+            } 
+
+
+## ControlRule [/controlrules/{id}]
+A single ControlRule object with all its details
+
++ Parameters
+    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
+
+### Retrieve a ControlRule [GET]
++ Response 200 (application/json)
+
+    + Header
+
+            X-My-Header: The Value
+
+    + Body
+
+            { "id": 1, "title": "heating on weekday morning temperature rule", "actions": {
+              { "appliance_id": 1, "set_status": "on" }
+            }, "conditions": { 
+              { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "Monday" }, 
+              { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "Friday" },
+              { "mote_id": 0, "sensor_index": 0, "operator": "ge", "value": "06:00:00" }, 
+              { "mote_id": 0, "sensor_index": 0, "operator": "lt", "value": "08:30:00" },
+              { "mote_id": 2, "sensor_index": 0, "operator": "lt", "value": "17.5" }
+            } 
+            
+
+### Remove a ControlRule [DELETE]
++ Response 204
