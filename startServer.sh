@@ -1,4 +1,3 @@
 #!/bin/bash
-#
 # 
-nohup node server.js > /tmp/rcswitch-rest.log &
+nohup node Appliance-server.js > /tmp/homenet-rest.log &

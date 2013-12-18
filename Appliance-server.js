@@ -31,22 +31,23 @@ app.configure(function() {
 });
 
 // JSON API
-app.get('/appliances', api.appliances);
-app.get('/motes', api.motes);
-app.get('/sensors', api.sensors);
-app.get('/controlrules', api.controlrules);
-app.get('/appliances/:id', api.appliance);
-app.get('/motes/:id', api.mote);
-app.get('/sensors/:id', api.sensor);
-app.get('/controlrules/:id', api.controlrule);
+app.get('/appliances', api.getAppliances);
+app.get('/motes', api.getMotes);
+app.get('/measures', api.getMeasures);
+app.get('/controlrules', api.getControlRules);
+app.get('/appliances/:id', api.getAppliance);
+app.get('/motes/:id', api.getMote);
+app.get('/measures/:id', api.getMeasure);
+app.get('/controlrules/:id', api.getControlRule);
 app.post('/appliances', api.addAppliance);
 app.post('/motes', api.addMote);
-app.post('/sensors', api.addSensor);
+app.post('/measures', api.addMeasure);
 app.post('/controlrules', api.addControlRule);
-app.put('/appliances/:id', api.editAppliance);
+app.put('/appliances/:id', api.editApplianceStatus);
+app.put('/motes/:id', api.editMoteSensors);
 app.delete('/appliances/:id', api.deleteAppliance);
 app.delete('/motes/:id', api.deleteMote);
-app.delete('/sensors/:id', api.deleteSensor);
+app.delete('/measures/:id', api.deleteMeasure);
 app.delete('/controlrules/:id', api.deleteControlRule);
 
 // Start server
