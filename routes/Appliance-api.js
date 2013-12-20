@@ -5,6 +5,7 @@ var exec = require('child_process').exec;
 var sleep = require('sleep');
 var request = require('request');
 
+var data_dirty = false;
 var data = {
   "appliances": [
     {
@@ -57,19 +58,19 @@ var data = {
   ],
   "measures": [
     {
-      "id": 0, "title": "real time clock", "unit": "day", "display": true
+      "id": 0, "title": "real time clock", "unit": "day", "hysteresis": 0 
     }, {
-      "id": 1, "title": "real time clock", "unit": "time", "display": true
+      "id": 1, "title": "real time clock", "unit": "time", "hysteresis": 0
     }, {
-      "id": 2, "title": "temperature", "unit": "Celsius", "display": true
+      "id": 2, "title": "temperature", "unit": "Celsius", "hysteresis": 1.0
     }, {
-      "id": 3, "title": "humidity", "unit": "%", "display": true
+      "id": 3, "title": "humidity", "unit": "%", "hysteresis": 0.05
     }, {
-      "id": 4, "title": "PIR detector", "unit": "binary", "display": true
+      "id": 4, "title": "PIR detector", "unit": "binary", "hysteresis": 0
     }, {
-      "id": 5, "title": "ambient light", "unit": "%", "display": true
+      "id": 5, "title": "ambient light", "unit": "%", "hysteresis": 0.10
     }, {
-      "id": 6, "title": "reed switch", "unit": "binary", "display": true
+      "id": 6, "title": "reed switch", "unit": "binary", "hysteresis": 0
     }
   ],
   "controlrules": [
@@ -245,8 +246,21 @@ var data = {
         { "mote_id": 2, "sensor_id": 0, "operator": "lt", "value": "27.5" },
         { "mote_id": 2, "sensor_id": 1, "operator": "lt", "value": "0.70" }
       ] 
-    }
-  ]   
+    }, 
+  ], 
+  "windows": [{
+      'id': 0, 'title': 'weekday morning', 'days': 31, 'start': 18000000,
+      'end': 30600000, 'duration': 0, 'deadTime': 0
+    }, {
+      'id': 1, 'title': 'weekday evening', 'days': 31, 'start': 61200000,
+      'end': 79200000, 'duration': 0, 'deadTime': 0
+    }, {
+      'id': 2, 'title': 'weekend morning', 'days': 96, 'start': 21600000,
+      'end': 36000000, 'duration': 3600000, 'deadTime': 0
+    }, {
+      'id': 3, 'title': 'weekend evening', 'days': 96, 'start': 57600000,
+      'end': 79200000, 'duration': 1000, 'deadTime': 60000
+  }]
 };
 
 // GET
@@ -272,6 +286,12 @@ exports.getControlRules = function (req, res) {
   console.log('Getting control rules.');
   var controlrules = [];
   res.json(data.controlrules);
+};
+
+exports.getWindows = function (req, res) {
+  console.log('Getting windows.');
+  var windows = [];
+  res.json(data.windows);
 };
 
 exports.getAppliance = function (req, res) {
@@ -318,6 +338,17 @@ exports.getControlRule = function (req, res) {
   res.json(404); // Not found
 };
 
+exports.getWindow = function (req, res) {
+  var id = req.params.id;
+  for (var i = 0; i < data.windows.length; i++) {
+    if (id == data.windows[i].id) {
+      res.json(data.windows[i]);
+      return;
+    }
+  }
+  res.json(404); // Not found
+};
+
 /*
 request({
   url: "http://private-3db18-appliance.apiary.io/appliances",
@@ -347,6 +378,7 @@ exports.addAppliance = function (req, res) {
   //newAppliance.status = "off";
   console.log('Adding appliance: ' + JSON.stringify(newAppliance));
   data.appliances.push(newAppliance);
+  data_dirty = true;
   res.send(201); // OK
 };
 
@@ -355,6 +387,7 @@ exports.addMote = function (req, res) {
   newMote.id = data.motes[data.motes.length - 1].id + 1;
   console.log('Adding mote: ' + JSON.stringify(newMote));
   data.motes.push(newMote);
+  data_dirty = true;
   res.send(201); // OK
 };
 
@@ -363,6 +396,7 @@ exports.addMeasure = function (req, res) {
   newMeasure.id = data.measures[data.measures.length - 1].id + 1;
   console.log('Adding measure: ' + JSON.stringify(newMeasure));
   data.measures.push(newMeasure);
+  data_dirty = true;
   res.send(201); // OK
 };
 
@@ -371,6 +405,16 @@ exports.addControlRule = function (req, res) {
   newControlRule.id = data.controlrules[data.controlrules.length - 1].id + 1;
   console.log('Adding control rule: ' + JSON.stringify(newControlRule));
   data.controlrules.push(newControlRule);
+  data_dirty = true;
+  res.send(201); // OK
+};
+
+exports.addWindows = function (req, res) {
+  var newWindow = req.body;
+  newWindow.id = data.windows[data.windows.length - 1].id + 1;
+  console.log('Adding window: ' + JSON.stringify(newWindow));
+  data.window.push(newWindow);
+  data_dirty = true;
   res.send(201); // OK
 };
 
@@ -398,6 +442,7 @@ exports.editApplianceStatus = function (req, res) {
           applianceStatus(data.appliances[i].title, data.motes[j].device_id, req.body.status);
           data.appliances[i].status = req.body.status;
           res.send(200); // OK
+          data_dirty = true;
           return;
         }
       }
@@ -412,6 +457,7 @@ exports.editMoteSensors = function (req, res) {
     if (id == data.motes[i].id) {
       console.log('Updating sensors for mote with id: ' + id);
       data.motes[i].sensors = req.body;
+      data_dirty = true;
       res.send(200); // OK
       return;
     }
@@ -425,6 +471,21 @@ exports.editControlRule = function (req, res) {
     if (id == data.controlrules[i].id) {
       console.log('Updating control rule with id: ' + id);
       data.controlrules[i].conditions = req.body;
+      data_dirty = true;
+      res.send(200); // OK
+      return;
+    }
+  }
+  res.json(404); // Not found
+};
+
+exports.editWindow = function (req, res) {
+  var id = req.params.id;
+  for (var i = 0; i < data.windows.length; i++) {
+    if (id == data.windows[i].id) {
+      console.log('Updating window with id: ' + id);
+      data.windows[i].conditions = req.body;
+      data_dirty = true;
       res.send(200); // OK
       return;
     }
@@ -440,6 +501,7 @@ exports.deleteAppliance = function (req, res) {
     if (id == data.appliances[i].id) {
       console.log('Deleting appliance with id: ' + id);
       data.appliances.splice(i, 1);
+      data_dirty = true;
       res.send(204); // OK
       return;
     }
@@ -453,6 +515,7 @@ exports.deleteMote = function (req, res) {
     if (id == data.motes[i].id) {
       console.log('Deleting mote with id: ' + id);
       data.motes.splice(i, 1);
+      data_dirty = true;
       res.send(204); // OK 
       return;
     }
@@ -466,6 +529,7 @@ exports.deleteMeasure = function (req, res) {
     if (id == data.measures[i].id) {
       console.log('Deleting measure with id: ' + id);
       data.measures.splice(i, 1);
+      data_dirty = true;
       res.send(204); // OK
       return;
     }
@@ -479,6 +543,21 @@ exports.deleteControlRule = function (req, res) {
     if (id == data.controlrules[i].id) {
       console.log('Deleting control rule with id: ' + id);
       data.controlrules.splice(i, 1);
+      data_dirty = true;
+      res.send(204); // OK
+      return;
+    }
+  }
+  res.json(404); // Not found
+};
+
+exports.deleteWindow = function (req, res) {
+  var id = req.params.id;
+  for (var i = 0; i < data.windows.length; i++) {
+    if (id == data.windows[i].id) {
+      console.log('Deleting window with id: ' + id);
+      data.windows.splice(i, 1);
+      data_dirty = true;
       res.send(204); // OK
       return;
     }

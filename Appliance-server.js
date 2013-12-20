@@ -35,20 +35,25 @@ app.get('/appliances', api.getAppliances);
 app.get('/motes', api.getMotes);
 app.get('/measures', api.getMeasures);
 app.get('/controlrules', api.getControlRules);
+app.get('/windows', api.getWindows);
 app.get('/appliances/:id', api.getAppliance);
 app.get('/motes/:id', api.getMote);
 app.get('/measures/:id', api.getMeasure);
 app.get('/controlrules/:id', api.getControlRule);
+app.get('/windows/:id', api.getWindow);
 app.post('/appliances', api.addAppliance);
 app.post('/motes', api.addMote);
 app.post('/measures', api.addMeasure);
 app.post('/controlrules', api.addControlRule);
+app.post('/windows', api.addWindow);
 app.put('/appliances/:id', api.editApplianceStatus);
 app.put('/motes/:id', api.editMoteSensors);
+app.put('/windows/:id', api.editWindows);
 app.delete('/appliances/:id', api.deleteAppliance);
 app.delete('/motes/:id', api.deleteMote);
 app.delete('/measures/:id', api.deleteMeasure);
 app.delete('/controlrules/:id', api.deleteControlRule);
+app.delete('/windows/:id', api.deleteWindow);
 
 // Start server
 app.listen(8000);
