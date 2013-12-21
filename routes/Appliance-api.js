@@ -9,15 +9,15 @@ var data_dirty = false;
 var data = {
   "appliances": [
     {
-      "id": 0, "title": "Heating", "status": "off", "controlling_mote_id": 1
+      "id": 0, "title": "Heating", "status": false, "controlling_mote_id": 1
     }, {
-      "id": 1, "title": "Air Conditioner", "status": "off", "controlling_mote_id": 2
+      "id": 1, "title": "Air Conditioner", "status": false, "controlling_mote_id": 2
     }, {
-      "id": 2, "title": "Fan", "status": "off", "controlling_mote_id": 2
+      "id": 2, "title": "Fan", "status": false, "controlling_mote_id": 2
     }, {
-      "id": 3, "title": "Door Bell", "status": "off", "controlling_mote_id": 3
+      "id": 3, "title": "Door Bell", "status": false, "controlling_mote_id": 3
     }, {
-      "id": 4, "title": "Laundry Room Ceiling Lamp", "status": "off", "controlling_mote_id": 4
+      "id": 4, "title": "Laundry Room Ceiling Lamp", "status": false, "controlling_mote_id": 4
     }
   ],
   "motes": [
@@ -266,31 +266,26 @@ var data = {
 // GET
 exports.getAppliances = function (req, res) {
   console.log('Getting appliances.');
-  var appliances = [];
   res.json(data.appliances);
 };
 
 exports.getMotes = function (req, res) {
   console.log('Getting motes.');
-  var motes = [];
   res.json(data.motes);
 };
 
 exports.getMeasures = function (req, res) {
   console.log('Getting measures.');
-  var measures = [];
   res.json(data.measures);
 };
 
 exports.getControlRules = function (req, res) {
   console.log('Getting control rules.');
-  var controlrules = [];
   res.json(data.controlrules);
 };
 
 exports.getWindows = function (req, res) {
   console.log('Getting windows.');
-  var windows = [];
   res.json(data.windows);
 };
 
@@ -409,11 +404,11 @@ exports.addControlRule = function (req, res) {
   res.send(201); // OK
 };
 
-exports.addWindows = function (req, res) {
+exports.addWindow = function (req, res) {
   var newWindow = req.body;
   newWindow.id = data.windows[data.windows.length - 1].id + 1;
   console.log('Adding window: ' + JSON.stringify(newWindow));
-  data.window.push(newWindow);
+  data.windows.push(newWindow);
   data_dirty = true;
   res.send(201); // OK
 };
@@ -432,17 +427,19 @@ request({
 */
 
 // PUT
-exports.editApplianceStatus = function (req, res) {
+exports.editAppliance = function (req, res) {
   var id = req.params.id;
+      console.log('try Updating appliance with id ' + id);
+      console.log('param = ' + JSON.stringify(req.body));
   for (var i = 0; i < data.appliances.length; i++) {
     if (id == data.appliances[i].id) {
+      console.log('Updating appliance with id ' + id);
+      data.appliances[i] = req.body;
+      res.send(200); // OK
+      data_dirty = true;
       for (var j = 0; j < data.motes.length; j++) {
-        if (data.appliances[i].controlling_mote_id === data.motes[j].id) {
-          console.log('Updating status of appliance with id ' + id + " to " + req.body.status);
-          applianceStatus(data.appliances[i].title, data.motes[j].device_id, req.body.status);
-          data.appliances[i].status = req.body.status;
-          res.send(200); // OK
-          data_dirty = true;
+        if (req.body.controlling_mote_id === data.motes[j].id) {
+          applianceStatus(req.body.title, data.motes[j].device_id, req.body.status);
           return;
         }
       }
@@ -484,7 +481,7 @@ exports.editWindow = function (req, res) {
   for (var i = 0; i < data.windows.length; i++) {
     if (id == data.windows[i].id) {
       console.log('Updating window with id: ' + id);
-      data.windows[i].conditions = req.body;
+      data.windows[i] = req.body;
       data_dirty = true;
       res.send(200); // OK
       return;
