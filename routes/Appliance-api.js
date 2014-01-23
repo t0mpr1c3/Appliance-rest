@@ -5,6 +5,7 @@ var exec = require('child_process').exec;
 var sleep = require('sleep');
 var request = require('request');
 
+// FIXME save data to file when dirty
 var data_dirty = false;
 var data = {
   "appliances": [
@@ -24,35 +25,35 @@ var data = {
     {
       "id": 0, "title": "beaglebone", "device_id": 0x50, "location": "office",
       "sensors": [
-        { "measure_id": 0, "value": "0", "timestamp": "0" },
-        { "measure_id": 1, "value": "0", "timestamp": "0" },
-        { "measure_id": 2, "value": "0", "timestamp": "0" },
-        { "measure_id": 3, "value": "0", "timestamp": "0" }
+        { "measure_id": 0, "value": "", "timestamp": "" },
+        { "measure_id": 1, "value": "", "timestamp": "" },
+        { "measure_id": 2, "value": "", "timestamp": "" },
+        { "measure_id": 3, "value": "", "timestamp": "" }
       ] 
     }, {
       "id": 1, "title": "basement mote", "device_id": 0x51, "location": "basement",
       "sensors": [
-        { "measure_id": 2, "value": "0", "timestamp": "0" },
-        { "measure_id": 4, "value": "0", "timestamp": "0" },
-        { "measure_id": 5, "value": "0", "timestamp": "0" }
+        { "measure_id": 2, "value": "", "timestamp": "" },
+        { "measure_id": 4, "value": "", "timestamp": "" },
+        { "measure_id": 5, "value": "", "timestamp": "" }
       ] 
     }, {
       "id": 2, "title": "hallway mote", "device_id": 0x52, "location": "1st floor hallway",
       "sensors": [
-        { "measure_id": 2, "value": "0", "timestamp": "0" },
-        { "measure_id": 3, "value": "0", "timestamp": "0" }
+        { "measure_id": 2, "value": "", "timestamp": "" },
+        { "measure_id": 3, "value": "", "timestamp": "" }
       ] 
     }, {
       "id": 3, "title": "porch mote", "device_id": 0x53, "location": "front porch",
       "sensors": [
-        { "measure_id": 4, "value": "0", "timestamp": "0" },
-        { "measure_id": 5, "value": "0", "timestamp": "0" }
+        { "measure_id": 4, "value": "", "timestamp": "" },
+        { "measure_id": 5, "value": "", "timestamp": "" }
       ] 
     }, {
       "id": 4, "title": "laundry mote", "device_id": 0x54, "location": "laundry",
       "sensors": [
-        { "measure_id": 4, "value": "0", "timestamp": "0" },
-        { "measure_id": 5, "value": "0", "timestamp": "0" }
+        { "measure_id": 4, "value": "", "timestamp": "" },
+        { "measure_id": 5, "value": "", "timestamp": "" }
       ] 
     }
   ],
@@ -429,8 +430,6 @@ request({
 // PUT
 exports.editAppliance = function (req, res) {
   var id = req.params.id;
-      console.log('try Updating appliance with id ' + id);
-      console.log('param = ' + JSON.stringify(req.body));
   for (var i = 0; i < data.appliances.length; i++) {
     if (id == data.appliances[i].id) {
       console.log('Updating appliance with id ' + id);
@@ -448,12 +447,26 @@ exports.editAppliance = function (req, res) {
   res.json(404); // not found
 };
 
-exports.editMoteSensors = function (req, res) {
+exports.editMote = function (req, res) {
   var id = req.params.id;
   for (var i = 0; i < data.motes.length; i++) {
     if (id == data.motes[i].id) {
-      console.log('Updating sensors for mote with id: ' + id);
-      data.motes[i].sensors = req.body;
+      console.log('Updating mote with id: ' + id);
+      data.motes[i] = req.body;
+      data_dirty = true;
+      res.send(200); // OK
+      return;
+    }
+  }
+  res.json(404); // Not found
+};
+
+exports.editMeasure = function (req, res) {
+  var id = req.params.id;
+  for (var i = 0; i < data.measures.length; i++) {
+    if (id == data.measures[i].id) {
+      console.log('Updating measure with id: ' + id);
+      data.measures[i] = req.body;
       data_dirty = true;
       res.send(200); // OK
       return;
@@ -521,6 +534,7 @@ exports.deleteMote = function (req, res) {
 };
 
 exports.deleteMeasure = function (req, res) {
+      console.log('Try Deleting measure with id: ' + id);
   var id = req.params.id;
   for (var i = 0; i < data.measures.length; i++) {
     if (id == data.measures[i].id) {
